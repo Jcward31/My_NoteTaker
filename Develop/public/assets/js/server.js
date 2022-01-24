@@ -1,10 +1,15 @@
 // adding the packages required 
 
+
+const fs = require("fs");
+
 const express = require("express");
 
 const app = express();
 
 const path = require("path");
+
+var notesDB = require("./db/db.json");
 
 // adding req to code 
 

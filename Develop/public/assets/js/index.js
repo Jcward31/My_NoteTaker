@@ -1,15 +1,15 @@
-const $noteTitle = $(".note-title");
-const $noteText = $(".note-textarea");
-var $saveNoteBtn = $(".save-note");
-var $newNoteBtn = $(".new-note");
-var $noteList = $(".new-note");
+var noteTitle;
+var noteText;
+var saveNoteBtn;
+var newNoteBtn;
+var noteList;
 
-if (window.location.pathname === 'notes') {
-  $noteTitle = document.querySelector('.note-title');
-  $noteText = document.querySelector('.note-textarea');
-  $saveNoteBtn = document.querySelector('.save-note');
-  $newNoteBtn = document.querySelector('.new-note');
-  $noteList = document.querySelectorAll('.list-container .list-group');
+if (window.location.pathname === '/notes') {
+  noteTitle = document.querySelector('.note-title');
+  noteText = document.querySelector('.note-textarea');
+  saveNoteBtn = document.querySelector('.save-note');
+  newNoteBtn = document.querySelector('.new-note');
+  noteList = document.querySelectorAll('.list-container .list-group');
 }
 
 // Show an element
@@ -57,18 +57,18 @@ headers: {
 }
 
 const renderActiveNote = () => {
-  hide($saveNoteBtn);
+  hide(saveNoteBtn);
 
   if (activeNote.id) {
-    $noteTitle.setAttribute('readonly', true);
-    $noteText.setAttribute('readonly', true);
-    $noteTitle.value = activeNote.title;
-    $noteText.value = activeNote.text;
+    noteTitle.setAttribute('readonly', true);
+    noteText.setAttribute('readonly', true);
+    noteTitle.value = activeNote.title;
+    noteText.value = activeNote.text;
   } else {
-    $noteTitle.removeAttribute('readonly');
-    $noteText.removeAttribute('readonly');
-    $noteTitle.value = '';
-    $noteText.value = '';
+    noteTitle.removeAttribute('readonly');
+    noteText.removeAttribute('readonly');
+    noteTitle.value = '';
+    noteText.value = '';
   }
 };
 
@@ -77,8 +77,8 @@ const renderActiveNote = () => {
 
 const handleNoteSave = () => {
 const newNote = {
-title: $noteTitle.value,
-text: $noteText.value,
+title: noteTitle.value,
+text: noteText.value,
 };
 saveNote(newNote).then(() => {
 getAndRenderNotes();
@@ -113,19 +113,19 @@ const handleNoteView = (e) => {
 
 // Sets the activeNote to and empty object and allows the user to enter a new note
 const handleNewNoteView = function () {
-if (!$noteTitle.value.trim() || !$notetext.val().trim()) {
-hide($saveNoteBtn);
+if (!noteTitle.value.trim() || !noteText.val().trim()) {
+hide(saveNoteBtn);
 } else {
-show($saveNoteBtn)
+show(saveNoteBtn)
 }
 };
 
 // if notes text are empty the then save note button should be hidden if there is text the save button should show
 const handleRenderSaveBtn = () => {
-  if (!$noteTitle.value.trim() || !$noteText.value.trim()) {
-    hide($saveNoteBtn);
+  if (!noteTitle.value.trim() || !noteText.value.trim()) {
+    hide(saveNoteBtn);
   } else {
-    show($saveNoteBtn);
+    show(saveNoteBtn);
   }
 };
 
@@ -188,10 +188,10 @@ const getAndRenderNotes = () => { return getNotes().then(renderNoteList);
 };
 
 if (window.location.pathname === '/notes') {
-  $saveNoteBtn.on("click", handleNoteSave);
-  $newNoteBtn.on("click", handleNewNoteView);
-  $noteTitle.on("keyup", handleRenderSaveBtn);
-  $noteText.on("keyup", handleRenderSaveBtn);
+  saveNoteBtn.addEventListener("click", handleNoteSave);
+  newNoteBtn.addEventListener("click", handleNewNoteView);
+  noteTitle.addEventListener('keyup', handleRenderSaveBtn);
+  noteText.addEventListener('keyup', handleRenderSaveBtn); 
 };
 
 getAndRenderNotes();
