@@ -25,63 +25,72 @@ const hide = (elem) => {
 // activeNote is used to keep track of the note in the textarea
 let activeNote = {};
 
-const getNotes = () =>
-  fetch('notes', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+const getNotes = () =>{
+return $.ajax({
+url: "/api/notes",
+method: 'GET',
+headers: {
+'Content-Type': 'application/json'
+}});;
+};
 
-const saveNote = (note) =>
-  fetch('/api/notes', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(note),
-  });
 
-const deleteNote = (id) =>
-  fetch(`/api/notes/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+//editing the save note function 
+
+const saveNote = (note) => {
+return $.ajax({
+url: "/api/notes",
+data: note,
+method: "POST",
+});
+};
+
+
+//editing the delete note function 
+const deleteNote = (id) =>{
+return $.ajax ({
+url: "/api/notes/" + id, 
+method: 'DELETE',
+headers: {
+'Content-Type': 'application/json',
+}});
+}
 
 const renderActiveNote = () => {
-  hide(saveNoteBtn);
+  hide($saveNoteBtn);
 
   if (activeNote.id) {
-    noteTitle.setAttribute('readonly', true);
-    noteText.setAttribute('readonly', true);
-    noteTitle.value = activeNote.title;
-    noteText.value = activeNote.text;
+    $noteTitle.setAttribute('readonly', true);
+    $noteText.setAttribute('readonly', true);
+    $noteTitle.value = activeNote.title;
+    $noteText.value = activeNote.text;
   } else {
-    noteTitle.removeAttribute('readonly');
-    noteText.removeAttribute('readonly');
-    noteTitle.value = '';
-    noteText.value = '';
+    $noteTitle.removeAttribute('readonly');
+    $noteText.removeAttribute('readonly');
+    $noteTitle.value = '';
+    $noteText.value = '';
   }
 };
 
+
+// adding the save, del, ext...
+
 const handleNoteSave = () => {
-  const newNote = {
-    title: noteTitle.value,
-    text: noteText.value,
-  };
-  saveNote(newNote).then(() => {
-    getAndRenderNotes();
-    renderActiveNote();
-  });
+const newNote = {
+title: $noteTitle.value,
+text: $noteText.value,
+};
+saveNote(newNote).then(() => {
+getAndRenderNotes();
+renderActiveNote();
+});
 };
 
 
 // Delete the clicked note
-const handleNoteDelete = (e) => {
+const handleNoteDelete = function (event) {
   // Prevents the click listener for the list from being called when the button inside of it is clicked
-  e.stopPropagation();
+  event.stopPropagation();
 
   const note = e.target;
   const noteId = JSON.parse(note.parentElement.getAttribute('data-note')).id;
@@ -98,22 +107,25 @@ const handleNoteDelete = (e) => {
 
 // Sets the activeNote and displays it
 const handleNoteView = (e) => {
-  e.preventDefault();
-  activeNote = JSON.parse(e.target.parentElement.getAttribute('data-note'));
-  renderActiveNote();
-};
-
-// Sets the activeNote to and empty object and allows the user to enter a new note
-const handleNewNoteView = (e) => {
   activeNote = {};
   renderActiveNote();
 };
 
+// Sets the activeNote to and empty object and allows the user to enter a new note
+const handleNewNoteView = function () {
+if (!$noteTitle.value.trim() || !$notetext.val().trim()) {
+hide($saveNoteBtn);
+} else {
+show($saveNoteBtn)
+}
+};
+
+// if notes text are empty the then save note button should be hidden if there is text the save button should show
 const handleRenderSaveBtn = () => {
-  if (!noteTitle.value.trim() || !noteText.value.trim()) {
-    hide(saveNoteBtn);
+  if (!$noteTitle.value.trim() || !$noteText.value.trim()) {
+    hide($saveNoteBtn);
   } else {
-    show(saveNoteBtn);
+    show($saveNoteBtn);
   }
 };
 
@@ -171,16 +183,15 @@ const renderNoteList = async (notes) => {
   }
 };
 
-
-
 // Gets notes from the db and renders them to the sidebar
 const getAndRenderNotes = () => { return getNotes().then(renderNoteList);
 };
 
+if (window.location.pathname === '/notes') {
   $saveNoteBtn.on("click", handleNoteSave);
   $newNoteBtn.on("click", handleNewNoteView);
   $noteTitle.on("keyup", handleRenderSaveBtn);
   $noteText.on("keyup", handleRenderSaveBtn);
-
+};
 
 getAndRenderNotes();
