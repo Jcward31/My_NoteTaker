@@ -1,3 +1,5 @@
+const { json } = require("express/lib/response");
+
 var noteTitle;
 var noteText;
 var saveNoteBtn;
@@ -26,8 +28,7 @@ const hide = (elem) => {
 let activeNote = {};
 
 const getNotes = () =>{
-return $.ajax({
-url: "/api/notes",
+fetch('/api/notes',{
 method: 'GET',
 headers: {
 'Content-Type': 'application/json'
@@ -38,18 +39,22 @@ headers: {
 //editing the save note function 
 
 const saveNote = (note) => {
-return $.ajax({
-url: "/api/notes",
+fetch('/api/notes', {
 data: note,
 method: "POST",
+headers: {
+'Content-Type': 'application/json'
+},
+
+body: json.stringify(note)
+
 });
 };
 
 
 //editing the delete note function 
 const deleteNote = (id) =>{
-return $.ajax ({
-url: "/api/notes/" + id, 
+fetch(`/api/notes/${id}`, {
 method: 'DELETE',
 headers: {
 'Content-Type': 'application/json',
