@@ -1,4 +1,3 @@
-const { json } = require("express/lib/response");
 
 var noteTitle;
 var noteText;
@@ -32,8 +31,8 @@ fetch('/api/notes',{
 method: 'GET',
 headers: {
 'Content-Type': 'application/json'
-}});;
-};
+},
+})};
 
 
 //editing the save note function 
@@ -46,10 +45,9 @@ headers: {
 'Content-Type': 'application/json'
 },
 
-body: json.stringify(note)
+body: JSON.stringify(note)
 
-});
-};
+})};
 
 
 //editing the delete note function 
@@ -58,8 +56,8 @@ fetch(`/api/notes/${id}`, {
 method: 'DELETE',
 headers: {
 'Content-Type': 'application/json',
-}});
-}
+},
+})};
 
 const renderActiveNote = () => {
   hide(saveNoteBtn);
@@ -97,7 +95,7 @@ const handleNoteDelete = function (event) {
   // Prevents the click listener for the list from being called when the button inside of it is clicked
   event.stopPropagation();
 
-  const note = e.target;
+  const note = event.target;
   const noteId = JSON.parse(note.parentElement.getAttribute('data-note')).id;
 
   if (activeNote.id === noteId) {
@@ -189,8 +187,8 @@ const renderNoteList = async (notes) => {
 };
 
 // Gets notes from the db and renders them to the sidebar
-const getAndRenderNotes = () => { return getNotes().then(renderNoteList);
-};
+const getAndRenderNotes = () => getNotes().then(renderNoteList);
+
 
 if (window.location.pathname === '/notes') {
   saveNoteBtn.addEventListener("click", handleNoteSave);
